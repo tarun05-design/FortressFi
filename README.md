@@ -241,7 +241,7 @@ Open **http://localhost:8000** in your browser.
 │   ├── test_portfolio.py        # NAV tracking, drift & audit trail tests
 │   └── test_risk_engine.py      # VaR, CVaR & guardrail boundary tests
 └── template/                    # Hackathon deliverables & presentation assets
-    ├── FortressFi_Presentation.pptx # Winning hackathon pitch deck (8 slides)
+    ├── FortressFi_Presentation.pptx # hackathon presentation (8 slides)
     ├── INIT_26_PPT_FORMAT.pptx  # Original competition template
     ├── readme_fintech.md        # FinTech track problem brief & evaluation criteria
     └── images/                  # High-resolution dashboard telemetry screenshots
