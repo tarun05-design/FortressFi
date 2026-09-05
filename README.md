@@ -34,14 +34,29 @@ This system directly addresses all three required areas from the hackathon brief
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart LR
-    A["📊 <b>Market Simulator</b><br/><sub>Correlated GBM & Regimes</sub>"] --> B["⚙️ <b>Optimization Engine</b><br/><sub>Mean-Variance SLSQP</sub>"]
-    B <--> C["🛡️ <b>Risk Guardrails</b><br/><sub>CVaR 95% & Circuit Breaker</sub>"]
-    B --> D["💼 <b>Portfolio Manager</b><br/><sub>NAV, Drift & Audit Log</sub>"]
+flowchart TD
+    subgraph CoreEngine["Core Quantitative & Risk Engines"]
+        direction LR
+        A["📊 <b>Market Simulator</b><br/>(returns + regimes)"]
+        B["⚡ <b>Optimization Engine</b><br/>(Mean-Var SLSQP)"]
+        C["🛡️ <b>Risk Guardrail Engine</b><br/>(CVaR gate)"]
+        A --> B
+        B --> C
+    end
+
+    D["💼 <b>Portfolio State Manager</b><br/>(holdings, NAV, history, decision audit log)"]
+    E["🚀 <b>FastAPI Server</b><br/>(REST API + WebSocket Stream)"]
+    F["🖥️ <b>Interactive Dashboard</b><br/>Allocation  |  Risk Gauges  |  NAV Chart  |  Scenarios  |  Decision Log"]
+
+    A --> D
+    B --> D
     C --> D
-    D --> E["🖥️ <b>Live Cockpit UI</b><br/><sub>WebSocket Streaming</sub>"]
+    D <-->|"WebSocket + REST"| E
+    E <-->|"Real-Time Push"| F
 
     classDef default fill:#1e293b,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc;
+    classDef container fill:#0f172a,stroke:#475569,stroke-width:1.5px,color:#94a3b8;
+    class CoreEngine container;
 ```
 
 **Execution Flow per Tick:**
