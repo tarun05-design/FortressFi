@@ -34,55 +34,23 @@ This system directly addresses all three required areas from the hackathon brief
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TD
-    %% Global Styling
-    classDef compNode fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc,rx:6px,ry:6px;
+flowchart LR
+    A["📊 <b>Market Simulator</b><br/><sub>Correlated GBM & Regimes</sub>"] --> B["⚙️ <b>Optimization Engine</b><br/><sub>Mean-Variance SLSQP</sub>"]
+    B <--> C["🛡️ <b>Risk Guardrails</b><br/><sub>CVaR 95% & Circuit Breaker</sub>"]
+    B --> D["💼 <b>Portfolio Manager</b><br/><sub>NAV, Drift & Audit Log</sub>"]
+    C --> D
+    D --> E["🖥️ <b>Live Cockpit UI</b><br/><sub>WebSocket Streaming</sub>"]
 
-    subgraph L1["1. MARKET DATA & REGIME DETECTION"]
-        direction LR
-        A1["Market Data Simulator<br/><i>Correlated Multi-Asset GBM</i>"]
-        A2["Regime Classifier<br/><i>Realized Volatility Engine</i>"]
-        A1 -->|"Correlated Prices"| A2
-    end
-
-    subgraph L2["2. DUAL-ENGINE INTELLIGENCE CORE"]
-        direction LR
-        B1["Optimization Engine<br/><i>Mean-Variance SLSQP</i>"]
-        B2["Risk Guardrail Engine<br/><i>CVaR 95% & Circuit Breakers</i>"]
-        B2 <-->|"Pre-Trade Gate & Veto"| B1
-    end
-
-    subgraph L3["3. PORTFOLIO STATE & AUDIT LEDGER"]
-        direction LR
-        C1["Portfolio State Manager<br/><i>Holdings, NAV & Drift Monitoring</i>"]
-        C2["Decision Audit Ledger<br/><i>Plain-English Audit Trail</i>"]
-        C1 <-->|"Logged Decisions"| C2
-    end
-
-    subgraph L4["4. REAL-TIME TELEMETRY & COCKPIT UI"]
-        direction LR
-        D1["FastAPI WebSocket Server<br/><i>Async Streaming Broadcast</i>"]
-        D2["Institutional Risk Cockpit<br/><i>Live Charts, Gauges & Scenario Lab</i>"]
-        D1 -->|"Live Feed (/ws/live)"| D2
-        D2 -.->|"User Actions & Shocks"| D1
-    end
-
-    %% Clean Pipeline Flow (Zero Cross-Line Tangling)
-    L1 ==>|"1. Asset Returns & Market Regimes"| L2
-    L2 ==>|"2. Optimal Weights & Guardrail Actions"| L3
-    L3 ==>|"3. Portfolio Telemetry & Audit Stream"| L4
-
-    class A1,A2,B1,B2,C1,C2,D1,D2 compNode;
+    classDef default fill:#1e293b,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc;
 ```
 
-**Simulation loop per tick:**
-1. Market Simulator generates next day's correlated returns (regime-aware)
-2. Portfolio updates holdings and NAV (natural drift)
-3. Risk Engine evaluates VaR, CVaR, drawdown, concentration → determines guardrail level
-4. If guardrail triggers ACT/CIRCUIT_BREAK → override allocation, log decision
-5. Else if drift exceeds threshold → Optimizer runs, proposes new weights
-6. Risk Engine validates proposed weights (pre-trade CVaR check)
-7. State pushed to dashboard via WebSocket
+**Execution Flow per Tick:**
+1. **Market Simulator** generates correlated asset returns across market regimes.
+2. **Portfolio State** updates asset holdings and NAV from natural price movement.
+3. **Risk Guardrails** evaluate 95% CVaR, drawdown, and concentration against dynamic thresholds.
+4. **Autonomous Control**: If thresholds are breached, system triggers automated de-risking or circuit break.
+5. **Drift-Gated Optimization**: If safe and drift exceeds threshold, SLSQP solves optimal allocation.
+6. **Real-Time Telemetry**: Engine state and plain-English audit records push to cockpit via WebSocket.
 
 ---
 
