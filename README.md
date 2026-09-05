@@ -17,6 +17,8 @@ An institutional-grade portfolio optimization and risk control system that dynam
 
 Built for the **Init26 FinTech Hackathon** at MPSTME (Asset & Capital Management / Optimization Controls track).
 
+---
+
 ## Problem Statement Alignment
 
 This system directly addresses all three required areas from the hackathon brief:
