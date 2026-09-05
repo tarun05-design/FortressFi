@@ -33,7 +33,7 @@ This system directly addresses all three required areas from the hackathon brief
 
 ```mermaid
 flowchart TD
-    subgraph CoreEngine["Core Quantitative & Risk Engines"]
+    subgraph CoreEngine["&nbsp;<br/><b>Core Quantitative & Risk Engines</b><br/>&nbsp;"]
         direction LR
         A["<b>Market Simulator</b><br/>(returns + regimes)"]
         B["<b>Optimization Engine</b><br/>(Mean-Var SLSQP)"]
@@ -52,8 +52,8 @@ flowchart TD
     D <-->|"WebSocket + REST"| E
     E <-->|"Real-Time Push"| F
 
-    classDef default fill:#1e293b,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc;
-    classDef container fill:#0f172a,stroke:#475569,stroke-width:1.5px,color:#94a3b8;
+    classDef default fill:#1e293b,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc,rx:6px,ry:6px;
+    classDef container fill:#0f172a,stroke:#334155,stroke-width:1.5px,color:#94a3b8;
     class CoreEngine container;
 ```
 
