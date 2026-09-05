@@ -1,606 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="FortressFi // Adaptive Risk-Guardrail Portfolio Engine. Autonomous institutional portfolio optimization and tail-risk defense.">
+    <meta name="description"
+        content="FortressFi // Adaptive Risk-Guardrail Portfolio Engine. Autonomous institutional portfolio optimization and tail-risk defense.">
     <title>FortressFi // Institutional Risk-Guardrail Cockpit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css?v=3.7">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
+
 <body class="cockpit-theme">
 
-<div class="cockpit-shell">
+    <div class="cockpit-shell">
 
-    <!-- ═══ 1. GLOBAL COMMAND BAR (Fixed Top) ═══ -->
-    <header class="command-bar" role="banner">
-        <div class="cmd-brand">
-            <div class="brand-shield" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    <path d="m9 12 2 2 4-4"/>
-                </svg>
-            </div>
-            <div class="brand-headings">
-                <div class="brand-title-group">
-                    <span class="brand-title">FortressFi</span>
-                    <span class="brand-sep">//</span>
-                    <span class="brand-tag">AUTONOMOUS RISK COCKPIT</span>
+        <!-- ═══ 1. GLOBAL COMMAND BAR (Fixed Top) ═══ -->
+        <header class="command-bar" role="banner">
+            <div class="cmd-brand">
+                <div class="brand-shield" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        <path d="m9 12 2 2 4-4" />
+                    </svg>
                 </div>
-            </div>
-        </div>
-
-        <!-- Inline Simulation Controls -->
-        <div class="cmd-controls" role="toolbar" aria-label="Simulation Controls">
-            <div class="ctrl-group scenario-group">
-                <label for="scenario" class="ctrl-label">SCENARIO</label>
-                <select id="scenario" class="ctrl-select">
-                    <option value="gradual_crash">Gradual Crash (Multi-Phase)</option>
-                    <option value="sudden_shock">Sudden Shock (Tail Spike)</option>
-                    <option value="normal">Normal Markets (Steady Drift)</option>
-                    <option value="recovery">Recovery Rally (Mean-Reversion)</option>
-                </select>
-            </div>
-
-            <div class="ctrl-group speed-group">
-                <div class="speed-label-row">
-                    <label for="speed" class="ctrl-label">SPEED</label>
-                    <span id="speed-value" class="tabular-nums speed-indicator">1.5s</span>
-                </div>
-                <input type="range" id="speed" min="0.2" max="3" step="0.1" value="1.5" class="slider-speed">
-            </div>
-
-            <div class="ctrl-btn-group">
-                <button type="button" class="btn-action btn-start" id="start" title="Start Autonomous Simulation">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    <span>Start</span>
-                </button>
-                <button type="button" class="btn-action btn-pause" id="stop" title="Pause Simulation [Space]" disabled>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    <span>Pause</span>
-                    <kbd class="kbd-hint">Space</kbd>
-                </button>
-                <button type="button" class="btn-action btn-reset" id="reset" title="Reset Portfolio State">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                    <span>Reset</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Telemetry Ticker Strip -->
-        <div class="cmd-telemetry">
-            <div class="telemetry-pill live-pill">
-                <span class="beacon-pulse" id="connection-pulse"></span>
-                <span class="telemetry-text" id="connection-text">LIVE</span>
-            </div>
-            <div class="telemetry-pill">
-                <span class="pill-title">REGIME</span>
-                <span class="regime-badge NORMAL" id="regime-badge">NORMAL</span>
-            </div>
-            <div class="telemetry-pill">
-                <span class="pill-title">GUARDRAIL</span>
-                <span class="guardrail-badge MONITOR" id="header-guardrail-level">MONITOR</span>
-            </div>
-            <div class="telemetry-pill day-pill">
-                <span class="pill-title">DAY</span>
-                <span class="day-number tabular-nums" id="header-day">0</span>
-                <span class="day-total">/ 252</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- ═══ 2. HERO KPI METRIC RIBBON (Single Unified Row) ═══ -->
-    <section class="kpi-ribbon" aria-label="Key Performance Indicators">
-        <!-- Card 1: NAV & Returns -->
-        <div class="kpi-card nav-kpi">
-            <div class="kpi-header">
-                <span class="kpi-label">NET ASSET VALUE</span>
-                <div class="status-indicator-wrap" id="portfolio-status-container">
-                    <span class="status-indicator-dot safe" id="status-dot"></span>
-                    <span class="status-headline" id="status-headline">STABLE</span>
-                    <span class="hidden-desc" id="status-desc" style="display:none;">All risk metrics operating within configured limits.</span>
-                </div>
-            </div>
-            <div class="kpi-main-val tabular-nums" id="header-nav">$100.00M</div>
-            <div class="kpi-sub-row">
-                <div class="sub-stat">
-                    <span class="sub-label">Today's P&amp;L</span>
-                    <span class="sub-val tabular-nums positive" id="header-pnl">+$0</span>
-                </div>
-                <div class="sub-stat">
-                    <span class="sub-label">Cumulative Return</span>
-                    <span class="sub-val tabular-nums positive" id="header-cumulative">+0.00%</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2: Risk-Adjusted Quality -->
-        <div class="kpi-card">
-            <div class="kpi-header">
-                <span class="kpi-label">RISK-ADJUSTED PERFORMANCE</span>
-                <span class="protocol-chip">SLSQP QUADRATIC</span>
-            </div>
-            <div class="ratio-double-val">
-                <div class="ratio-block">
-                    <span class="ratio-title">SHARPE</span>
-                    <span class="ratio-num tabular-nums" id="perf-sharpe">0.00</span>
-                </div>
-                <div class="ratio-divider">/</div>
-                <div class="ratio-block">
-                    <span class="ratio-title">SORTINO</span>
-                    <span class="ratio-num tabular-nums" id="perf-sortino">0.00</span>
-                </div>
-            </div>
-            <div class="kpi-sub-row">
-                <span class="sub-caption">Annualized risk-free benchmark: 2.0%</span>
-            </div>
-        </div>
-
-        <!-- Card 3: Active Tail Risk (CVaR & VaR) -->
-        <div class="kpi-card">
-            <div class="kpi-header">
-                <span class="kpi-label">ACTIVE TAIL RISK</span>
-                <span class="kpi-sub-tag">95% HISTORICAL</span>
-            </div>
-            <div class="dual-metric-row">
-                <div class="metric-mini-stat">
-                    <span class="mini-label">CVaR (Expected Shortfall)</span>
-                    <span class="mini-num tabular-nums safe-text" id="val-cvar">0.00%</span>
-                    <span class="mini-limit" id="sub-cvar">0% of 2.80% limit</span>
-                </div>
-                <div class="metric-mini-stat">
-                    <span class="mini-label">VaR (1-Day Loss)</span>
-                    <span class="mini-num tabular-nums safe-text" id="val-var">0.00%</span>
-                    <span class="mini-limit" id="sub-var">0% of 1.80% limit</span>
-                </div>
-            </div>
-            <div class="kpi-sub-row dual-mini-bars">
-                <div class="mini-bar-track">
-                    <div class="mini-bar-fill safe" id="bar-cvar" style="width: 0%;"></div>
-                </div>
-                <div class="mini-bar-track">
-                    <div class="mini-bar-fill safe" id="bar-var" style="width: 0%;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 4: Drawdown & Guardrail Escalation -->
-        <div class="kpi-card">
-            <div class="kpi-header">
-                <span class="kpi-label">MAX DRAWDOWN &amp; SAFETY</span>
-                <span class="status-pill-safe" id="risk-gate-status">SAFE</span>
-            </div>
-            <div class="dual-metric-row">
-                <div class="metric-mini-stat">
-                    <span class="mini-label">Current Drawdown</span>
-                    <span class="mini-num tabular-nums safe-text" id="val-dd">0.00%</span>
-                    <span class="mini-limit" id="sub-dd">0% of 12.00% limit</span>
-                </div>
-                <div class="metric-mini-stat">
-                    <span class="mini-label">Concentration (HHI)</span>
-                    <span class="mini-num tabular-nums" id="val-hhi">0.00</span>
-                    <span class="mini-limit" id="sub-hhi">0% of 35.00 limit</span>
-                </div>
-            </div>
-            <div class="kpi-sub-row dual-mini-bars">
-                <div class="mini-bar-track">
-                    <div class="mini-bar-fill safe" id="bar-dd" style="width: 0%;"></div>
-                </div>
-                <div class="mini-bar-track">
-                    <div class="mini-bar-fill safe" id="bar-hhi" style="width: 0%;"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ 3. CORE COCKPIT GRID (65% Left / 35% Right) ═══ -->
-    <div class="cockpit-grid">
-
-        <!-- ─── LEFT COLUMN: Performance Telemetry & Decision Engine ─── -->
-        <div class="cockpit-col-left">
-
-            <!-- Card: Performance Telemetry Chart -->
-            <section class="cockpit-card chart-card" aria-label="Portfolio Performance Telemetry">
-                <div class="card-header">
-                    <div class="header-left">
-                        <h2 class="card-title">PORTFOLIO PERFORMANCE TELEMETRY</h2>
-                        <span class="card-subtitle">Real-time NAV trajectory with autonomous event telemetry</span>
-                    </div>
-                    <div class="chart-telemetry-legend">
-                        <span class="legend-badge live-pulse"><span class="pulse-dot"></span> LIVE</span>
-                        <span class="legend-badge"><span class="leg-swatch nav-swatch"></span> NAV</span>
-                        <span class="legend-badge"><span class="leg-marker rebal-marker"></span> Rebalance</span>
-                        <span class="legend-badge"><span class="leg-marker warn-marker"></span> Warning</span>
-                        <span class="legend-badge"><span class="leg-marker circuit-marker"></span> Circuit Break</span>
+                <div class="brand-headings">
+                    <div class="brand-title-group">
+                        <span class="brand-title">FortressFi</span>
+                        <span class="brand-sep">//</span>
+                        <span class="brand-tag">AUTONOMOUS RISK COCKPIT</span>
                     </div>
                 </div>
-                <div class="chart-viewport">
-                    <canvas id="nav-chart"></canvas>
-                </div>
-            </section>
+            </div>
 
-            <!-- Card: Autonomous Decision Engine (Signature Feature) -->
-            <section class="cockpit-card decision-engine-card" aria-label="FortressFi Autonomous Decision Engine">
-                <div class="card-header">
-                    <div class="header-left">
-                        <div class="title-with-badge">
-                            <h2 class="card-title">FORTRESSFI DECISION ENGINE</h2>
-                            <span class="active-pulse-tag">AUTONOMOUS RISK DEFENSE</span>
+            <!-- Inline Simulation Controls -->
+            <div class="cmd-controls" role="toolbar" aria-label="Simulation Controls">
+                <div class="ctrl-group scenario-group">
+                    <label for="scenario" class="ctrl-label">SCENARIO</label>
+                    <select id="scenario" class="ctrl-select">
+                        <option value="gradual_crash">Gradual Crash (Multi-Phase)</option>
+                        <option value="sudden_shock">Sudden Shock (Tail Spike)</option>
+                        <option value="normal">Normal Markets (Steady Drift)</option>
+                        <option value="recovery">Recovery Rally (Mean-Reversion)</option>
+                    </select>
+                </div>
+
+                <div class="ctrl-group speed-group">
+                    <div class="speed-label-row">
+                        <label for="speed" class="ctrl-label">SPEED</label>
+                        <span id="speed-value" class="tabular-nums speed-indicator">1.5s</span>
+                    </div>
+                    <input type="range" id="speed" min="0.2" max="3" step="0.1" value="1.5" class="slider-speed">
+                </div>
+
+                <div class="ctrl-btn-group">
+                    <button type="button" class="btn-action btn-start" id="start" title="Start Autonomous Simulation">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        <span>Start</span>
+                    </button>
+                    <button type="button" class="btn-action btn-pause" id="stop" title="Pause Simulation [Space]"
+                        disabled>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="4" width="4" height="16" />
+                            <rect x="14" y="4" width="4" height="16" />
+                        </svg>
+                        <span>Pause</span>
+                        <kbd class="kbd-hint">Space</kbd>
+                    </button>
+                    <button type="button" class="btn-action btn-reset" id="reset" title="Reset Portfolio State">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                        </svg>
+                        <span>Reset</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Telemetry Ticker Strip -->
+            <div class="cmd-telemetry">
+                <div class="telemetry-pill live-pill">
+                    <span class="beacon-pulse" id="connection-pulse"></span>
+                    <span class="telemetry-text" id="connection-text">LIVE</span>
+                </div>
+                <div class="telemetry-pill">
+                    <span class="pill-title">REGIME</span>
+                    <span class="regime-badge NORMAL" id="regime-badge">NORMAL</span>
+                </div>
+                <div class="telemetry-pill">
+                    <span class="pill-title">GUARDRAIL</span>
+                    <span class="guardrail-badge MONITOR" id="header-guardrail-level">MONITOR</span>
+                </div>
+                <div class="telemetry-pill day-pill">
+                    <span class="pill-title">DAY</span>
+                    <span class="day-number tabular-nums" id="header-day">0</span>
+                    <span class="day-total">/ 252</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ═══ 2. HERO KPI METRIC RIBBON (Single Unified Row) ═══ -->
+        <section class="kpi-ribbon" aria-label="Key Performance Indicators">
+            <!-- Card 1: NAV & Returns -->
+            <div class="kpi-card nav-kpi">
+                <div class="kpi-header">
+                    <span class="kpi-label">NET ASSET VALUE</span>
+                    <div class="status-indicator-wrap" id="portfolio-status-container">
+                        <span class="status-indicator-dot safe" id="status-dot"></span>
+                        <span class="status-headline" id="status-headline">STABLE</span>
+                        <span class="hidden-desc" id="status-desc" style="display:none;">All risk metrics operating
+                            within configured limits.</span>
+                    </div>
+                </div>
+                <div class="kpi-main-val tabular-nums" id="header-nav">$100.00M</div>
+                <div class="kpi-sub-row">
+                    <div class="sub-stat">
+                        <span class="sub-label">Today's P&amp;L</span>
+                        <span class="sub-val tabular-nums positive" id="header-pnl">+$0</span>
+                    </div>
+                    <div class="sub-stat">
+                        <span class="sub-label">Cumulative Return</span>
+                        <span class="sub-val tabular-nums positive" id="header-cumulative">+0.00%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Risk-Adjusted Quality -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">RISK-ADJUSTED PERFORMANCE</span>
+                    <span class="protocol-chip">SLSQP QUADRATIC</span>
+                </div>
+                <div class="ratio-double-val">
+                    <div class="ratio-block">
+                        <span class="ratio-title">SHARPE</span>
+                        <span class="ratio-num tabular-nums" id="perf-sharpe">0.00</span>
+                    </div>
+                    <div class="ratio-divider">/</div>
+                    <div class="ratio-block">
+                        <span class="ratio-title">SORTINO</span>
+                        <span class="ratio-num tabular-nums" id="perf-sortino">0.00</span>
+                    </div>
+                </div>
+                <div class="kpi-sub-row">
+                    <span class="sub-caption">Annualized risk-free benchmark: 2.0%</span>
+                </div>
+            </div>
+
+            <!-- Card 3: Active Tail Risk (CVaR & VaR) -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">ACTIVE TAIL RISK</span>
+                    <span class="kpi-sub-tag">95% HISTORICAL</span>
+                </div>
+                <div class="dual-metric-row">
+                    <div class="metric-mini-stat">
+                        <span class="mini-label">CVaR (Expected Shortfall)</span>
+                        <span class="mini-num tabular-nums safe-text" id="val-cvar">0.00%</span>
+                        <span class="mini-limit" id="sub-cvar">0% of 2.80% limit</span>
+                    </div>
+                    <div class="metric-mini-stat">
+                        <span class="mini-label">VaR (1-Day Loss)</span>
+                        <span class="mini-num tabular-nums safe-text" id="val-var">0.00%</span>
+                        <span class="mini-limit" id="sub-var">0% of 1.80% limit</span>
+                    </div>
+                </div>
+                <div class="kpi-sub-row dual-mini-bars">
+                    <div class="mini-bar-track">
+                        <div class="mini-bar-fill safe" id="bar-cvar" style="width: 0%;"></div>
+                    </div>
+                    <div class="mini-bar-track">
+                        <div class="mini-bar-fill safe" id="bar-var" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Drawdown & Guardrail Escalation -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">MAX DRAWDOWN &amp; SAFETY</span>
+                    <span class="status-pill-safe" id="risk-gate-status">SAFE</span>
+                </div>
+                <div class="dual-metric-row">
+                    <div class="metric-mini-stat">
+                        <span class="mini-label">Current Drawdown</span>
+                        <span class="mini-num tabular-nums safe-text" id="val-dd">0.00%</span>
+                        <span class="mini-limit" id="sub-dd">0% of 12.00% limit</span>
+                    </div>
+                    <div class="metric-mini-stat">
+                        <span class="mini-label">Concentration (HHI)</span>
+                        <span class="mini-num tabular-nums" id="val-hhi">0.00</span>
+                        <span class="mini-limit" id="sub-hhi">0% of 35.00 limit</span>
+                    </div>
+                </div>
+                <div class="kpi-sub-row dual-mini-bars">
+                    <div class="mini-bar-track">
+                        <div class="mini-bar-fill safe" id="bar-dd" style="width: 0%;"></div>
+                    </div>
+                    <div class="mini-bar-track">
+                        <div class="mini-bar-fill safe" id="bar-hhi" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ 3. CORE COCKPIT GRID (65% Left / 35% Right) ═══ -->
+        <div class="cockpit-grid">
+
+            <!-- ─── LEFT COLUMN: Performance Telemetry & Decision Engine ─── -->
+            <div class="cockpit-col-left">
+
+                <!-- Card: Performance Telemetry Chart -->
+                <section class="cockpit-card chart-card" aria-label="Portfolio Performance Telemetry">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <h2 class="card-title">PORTFOLIO PERFORMANCE TELEMETRY</h2>
+                            <span class="card-subtitle">Real-time NAV trajectory with autonomous event telemetry</span>
                         </div>
-                        <span class="card-subtitle" id="intel-explanation">
-                            Portfolio initialized with baseline balanced allocation. Optimization engine actively monitoring drift and regime transitions.
-                        </span>
+                        <div class="chart-telemetry-legend">
+                            <span class="legend-badge live-pulse"><span class="pulse-dot"></span> LIVE</span>
+                            <span class="legend-badge"><span class="leg-swatch nav-swatch"></span> NAV</span>
+                            <span class="legend-badge"><span class="leg-marker rebal-marker"></span> Rebalance</span>
+                            <span class="legend-badge"><span class="leg-marker warn-marker"></span> Warning</span>
+                            <span class="legend-badge"><span class="leg-marker circuit-marker"></span> Circuit
+                                Break</span>
+                        </div>
                     </div>
-                    <div class="header-right">
-                        <span class="decision-day-pill tabular-nums" id="intel-day">DAY 0</span>
-                        <button type="button" class="btn-audit-trigger" id="btn-toggle-audit" onclick="toggleFullAuditLog()">
-                            Full Audit Trail &rarr;
+                    <div class="chart-viewport">
+                        <canvas id="nav-chart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Card: Autonomous Decision Engine (Signature Feature) -->
+                <section class="cockpit-card decision-engine-card" aria-label="FortressFi Autonomous Decision Engine">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <div class="title-with-badge">
+                                <h2 class="card-title">FORTRESSFI DECISION ENGINE</h2>
+                                <span class="active-pulse-tag">AUTONOMOUS RISK DEFENSE</span>
+                            </div>
+                            <span class="card-subtitle" id="intel-explanation">
+                                Portfolio initialized with baseline balanced allocation. Optimization engine actively
+                                monitoring drift and regime transitions.
+                            </span>
+                        </div>
+                        <div class="header-right">
+                            <span class="decision-day-pill tabular-nums" id="intel-day">DAY 0</span>
+                            <button type="button" class="btn-audit-trigger" id="btn-toggle-audit"
+                                onclick="toggleFullAuditLog()">
+                                Full Audit Trail &rarr;
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4-Stage Connected Decision Flow Architecture -->
+                    <div class="decision-flow-pipeline">
+                        <!-- Stage 1: Signal -->
+                        <div class="flow-card stage-signal">
+                            <div class="card-step-header">
+                                <span class="step-badge">01 SIGNAL</span>
+                                <span class="step-type-label">MARKET EVENT</span>
+                            </div>
+                            <div class="card-content-wrap">
+                                <span class="stage-val" id="intel-why">Initial capital deployment across multi-asset
+                                    spectrum.</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 1 -->
+                        <div class="flow-arrow-node" aria-hidden="true" title="Signal Triggers Detection">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+
+                        <!-- Stage 2: Detection -->
+                        <div class="flow-card stage-detection">
+                            <div class="card-step-header">
+                                <span class="step-badge">02 DETECTION</span>
+                                <span class="step-type-label">RISK GATE</span>
+                            </div>
+                            <div class="card-content-wrap">
+                                <span class="stage-val" id="intel-action-type">PORTFOLIO INITIALIZED</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 2 -->
+                        <div class="flow-arrow-node" aria-hidden="true" title="Detection Escalates to Action">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+
+                        <!-- Stage 3: Action -->
+                        <div class="flow-card stage-action">
+                            <div class="card-step-header">
+                                <span class="step-badge">03 ACTION</span>
+                                <span class="step-type-label">SYSTEM ACTION</span>
+                            </div>
+                            <div class="card-content-wrap">
+                                <span class="stage-val" id="intel-action">Baseline allocation set to target
+                                    weights.</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 3 -->
+                        <div class="flow-arrow-node" aria-hidden="true" title="Action Produces Verification">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+
+                        <!-- Stage 4: Verification -->
+                        <div class="flow-card stage-verify">
+                            <div class="card-step-header">
+                                <span class="step-badge">04 VERIFICATION</span>
+                                <span class="step-verified-badge">VERIFIED</span>
+                            </div>
+                            <div class="card-content-wrap">
+                                <span class="stage-val" id="intel-result">Balanced risk exposure established.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ─── RIGHT COLUMN: Guardrails, Allocation & Risk Radar ─── -->
+            <div class="cockpit-col-right">
+
+                <!-- Card: 4-Tier Guardrail Pipeline -->
+                <section class="cockpit-card guardrail-card" aria-label="Risk Guardrail Escalation System">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <h3 class="card-title">RISK GUARDRAIL PIPELINE</h3>
+                            <span class="card-subtitle">Zero-human-in-the-loop autonomous escalation</span>
+                        </div>
+                    </div>
+
+                    <div class="guardrail-directive-bar">
+                        <span class="directive-beacon"></span>
+                        <span class="directive-text" id="alert-text">All risk metrics operating within configured
+                            limits. Dynamic drift optimization active.</span>
+                    </div>
+
+                    <div class="guardrail-ladder-grid">
+                        <div class="ladder-step active" id="node-monitor" data-level="MONITOR">
+                            <div class="step-badge">01</div>
+                            <div class="step-info">
+                                <span class="step-name">MONITOR</span>
+                                <span class="step-desc">Nominal Drift Control</span>
+                            </div>
+                            <span class="step-tag active-tag">ACTIVE</span>
+                        </div>
+                        <div class="ladder-step" id="node-warn" data-level="WARN">
+                            <div class="step-badge">02</div>
+                            <div class="step-info">
+                                <span class="step-name">WARN</span>
+                                <span class="step-desc">Buffer Alert Threshold</span>
+                            </div>
+                            <span class="step-tag alert-tag">ALERT</span>
+                        </div>
+                        <div class="ladder-step" id="node-act" data-level="ACT">
+                            <div class="step-badge">03</div>
+                            <div class="step-info">
+                                <span class="step-name">ACT</span>
+                                <span class="step-desc">Forced De-Risking (-30%)</span>
+                            </div>
+                            <span class="step-tag derisk-tag">DE-RISK</span>
+                        </div>
+                        <div class="ladder-step" id="node-circuit" data-level="CIRCUIT_BREAK">
+                            <div class="step-badge">04</div>
+                            <div class="step-info">
+                                <span class="step-name">CIRCUIT BREAK</span>
+                                <span class="step-desc">Defensive Floor Lock</span>
+                            </div>
+                            <span class="step-tag lock-tag">LOCK</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Card: Asset Allocation Donut & Sleeve -->
+                <section class="cockpit-card allocation-card" aria-label="Portfolio Asset Allocation">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <h3 class="card-title">PORTFOLIO ALLOCATION</h3>
+                            <span class="card-subtitle">Target vs actual drift</span>
+                        </div>
+                        <span class="tag-clean tabular-nums" id="alloc-count">6 ASSETS</span>
+                    </div>
+
+                    <div class="allocation-layout">
+                        <div class="donut-wrap">
+                            <canvas id="allocation-chart"></canvas>
+                            <div class="donut-center-overlay">
+                                <span class="donut-center-lbl">PORTFOLIO</span>
+                                <span class="donut-center-val tabular-nums" id="donut-center-nav">$100.0M</span>
+                            </div>
+                        </div>
+                        <div class="allocation-items-list" id="allocation-list">
+                            <!-- Dynamically populated by ES6 JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Card: Institutional Risk Radar Meters -->
+                <section class="cockpit-card risk-gauges-card" aria-label="Institutional Risk Overview">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <h3 class="card-title">INSTITUTIONAL RISK RADAR</h3>
+                            <span class="card-subtitle" id="risk-summary-sentence">All metrics operating within
+                                conservative risk boundaries.</span>
+                        </div>
+                    </div>
+
+                    <div class="gauges-stack">
+                        <div class="gauge-item" id="risk-row-var">
+                            <div class="gauge-meta">
+                                <span class="gauge-name">Value at Risk (95% 1-Day)</span>
+                                <span class="gauge-figure tabular-nums"><strong id="val-var-alt">0.00%</strong> /
+                                    1.80%</span>
+                            </div>
+                            <div class="gauge-track">
+                                <div class="gauge-fill safe" id="bar-var-alt" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="gauge-item" id="risk-row-cvar">
+                            <div class="gauge-meta">
+                                <span class="gauge-name">CVaR (Expected Shortfall)</span>
+                                <span class="gauge-figure tabular-nums"><strong id="val-cvar-alt">0.00%</strong> /
+                                    2.80%</span>
+                            </div>
+                            <div class="gauge-track">
+                                <div class="gauge-fill safe" id="bar-cvar-alt" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="gauge-item" id="risk-row-dd">
+                            <div class="gauge-meta">
+                                <span class="gauge-name">Peak-to-Trough Drawdown</span>
+                                <span class="gauge-figure tabular-nums"><strong id="val-dd-alt">0.00%</strong> /
+                                    12.00%</span>
+                            </div>
+                            <div class="gauge-track">
+                                <div class="gauge-fill safe" id="bar-dd-alt" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="gauge-item" id="risk-row-hhi">
+                            <div class="gauge-meta">
+                                <span class="gauge-name">Concentration Index (HHI)</span>
+                                <span class="gauge-figure tabular-nums"><strong id="val-hhi-alt">0.00</strong> /
+                                    35.00</span>
+                            </div>
+                            <div class="gauge-track">
+                                <div class="gauge-fill safe" id="bar-hhi-alt" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- ═══ 4. TABBED ANALYTICAL DECK (What-If Lab + Audit Log) ═══ -->
+        <section class="analytical-deck" aria-label="Advanced Analytics and Stress Testing">
+            <div class="deck-tabs-nav" role="tablist">
+                <button type="button" class="deck-tab active" id="tab-btn-scenario" role="tab" aria-selected="true"
+                    aria-controls="tab-scenario" onclick="switchDeckTab('scenario')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg>
+                    <span>QUANTITATIVE WHAT-IF STRESS LAB</span>
+                </button>
+                <button type="button" class="deck-tab" id="tab-btn-audit" role="tab" aria-selected="false"
+                    aria-controls="tab-audit" onclick="switchDeckTab('audit')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    <span>INSTITUTIONAL DECISION AUDIT LOG</span>
+                </button>
+            </div>
+
+            <!-- Tab 1: What-If Scenario Lab -->
+            <div class="deck-tab-content active" id="tab-scenario" role="tabpanel">
+                <div class="scenario-deck-body">
+                    <!-- Left: Presets & 6 Sliders Grid -->
+                    <div class="scenario-left-col">
+                        <div class="scenario-sub-header">
+                            <span class="sub-header-title">HYPOTHETICAL ASSET SHOCKS</span>
+                            <div class="scenario-presets">
+                                <button type="button" class="preset-pill" onclick="loadPreset('normal')">NORMAL</button>
+                                <button type="button" class="preset-pill active" onclick="loadPreset('crash')">2008
+                                    CRASH</button>
+                                <button type="button" class="preset-pill" onclick="loadPreset('rates')">RATE
+                                    SHOCK</button>
+                                <button type="button" class="preset-pill"
+                                    onclick="loadPreset('recovery')">RECOVERY</button>
+                            </div>
+                        </div>
+
+                        <div class="shock-grid">
+                            <div class="shock-card">
+                                <div class="shock-top">
+                                    <label for="shock-us-equity">US Equity</label>
+                                    <span class="shock-val tabular-nums negative" id="val-shock-us-equity">-25%</span>
+                                </div>
+                                <input type="range" id="shock-us-equity" min="-50" max="50" step="1" value="-25"
+                                    class="shock-slider" oninput="updateSliderDisplay(this)">
+                            </div>
+
+                            <div class="shock-card">
+                                <div class="shock-top">
+                                    <label for="shock-govt-bonds">Government Bonds</label>
+                                    <span class="shock-val tabular-nums positive" id="val-shock-govt-bonds">+5%</span>
+                                </div>
+                                <input type="range" id="shock-govt-bonds" min="-30" max="30" step="1" value="5"
+                                    class="shock-slider" oninput="updateSliderDisplay(this)">
+                            </div>
+
+                            <div class="shock-card">
+                                <div class="shock-top">
+                                    <label for="shock-intl-equity">International Equity</label>
+                                    <span class="shock-val tabular-nums negative" id="val-shock-intl-equity">-30%</span>
+                                </div>
+                                <input type="range" id="shock-intl-equity" min="-50" max="50" step="1" value="-30"
+                                    class="shock-slider" oninput="updateSliderDisplay(this)">
+                            </div>
+
+                            <div class="shock-card">
+                                <div class="shock-top">
+                                    <label for="shock-corp-bonds">Corporate Bonds</label>
+                                    <span class="shock-val tabular-nums negative" id="val-shock-corp-bonds">-8%</span>
+                                </div>
+                                <input type="range" id="shock-corp-bonds" min="-30" max="30" step="1" value="-8"
+                                    class="shock-slider" oninput="updateSliderDisplay(this)">
+                            </div>
+
+                            <div class="shock-card">
+                                <div class="shock-top">
+                                    <label for="shock-commodities">Commodities</label>
+                                    <span class="shock-val tabular-nums negative" id="val-shock-commodities">-15%</span>
+                                </div>
+                                <input type="range" id="shock-commodities" min="-40" max="40" step="1" value="-15"
+                                    class="shock-slider" oninput="updateSliderDisplay(this)">
+                            </div>
+
+                            <div class="shock-card">
+                                <div class="shock-top">
+                                    <label for="shock-cash">Cash (USD)</label>
+                                    <span class="shock-val tabular-nums" id="val-shock-cash">0%</span>
+                                </div>
+                                <input type="range" id="shock-cash" min="-10" max="10" step="1" value="0"
+                                    class="shock-slider" oninput="updateSliderDisplay(this)">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-execute-stress" id="btn-run-scenario" onclick="runScenario()">
+                            Run Quantitative Stress Test
                         </button>
                     </div>
-                </div>
 
-                <!-- 4-Stage Connected Decision Flow Architecture -->
-                <div class="decision-flow-pipeline">
-                    <!-- Stage 1: Signal -->
-                    <div class="flow-card stage-signal">
-                        <div class="card-step-header">
-                            <span class="step-badge">01 SIGNAL</span>
-                            <span class="step-type-label">MARKET EVENT</span>
-                        </div>
-                        <div class="card-content-wrap">
-                            <span class="stage-val" id="intel-why">Initial capital deployment across multi-asset spectrum.</span>
-                        </div>
-                    </div>
+                    <!-- Right: Projected Impact & Directive -->
+                    <div class="scenario-right-col" id="scenario-results-panel">
+                        <span class="sub-header-title">SIMULATED POST-SHOCK PROJECTION</span>
 
-                    <!-- Connector 1 -->
-                    <div class="flow-arrow-node" aria-hidden="true" title="Signal Triggers Detection">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-
-                    <!-- Stage 2: Detection -->
-                    <div class="flow-card stage-detection">
-                        <div class="card-step-header">
-                            <span class="step-badge">02 DETECTION</span>
-                            <span class="step-type-label">RISK GATE</span>
+                        <div class="impact-metrics-grid">
+                            <div class="impact-tile">
+                                <span class="tile-label">PROJECTED NAV</span>
+                                <span class="tile-val tabular-nums" id="res-nav">$88.60M</span>
+                            </div>
+                            <div class="impact-tile">
+                                <span class="tile-label">PROJECTED RETURN</span>
+                                <span class="tile-val tabular-nums negative" id="res-return">-11.40%</span>
+                            </div>
+                            <div class="impact-tile">
+                                <span class="tile-label">PROJECTED DRAWDOWN</span>
+                                <span class="tile-val tabular-nums negative" id="res-dd">11.40%</span>
+                            </div>
+                            <div class="impact-tile">
+                                <span class="tile-label">GUARDRAIL RESPONSE</span>
+                                <span class="tile-val tag-warn" id="res-level">WARN</span>
+                            </div>
                         </div>
-                        <div class="card-content-wrap">
-                            <span class="stage-val" id="intel-action-type">PORTFOLIO INITIALIZED</span>
-                        </div>
-                    </div>
 
-                    <!-- Connector 2 -->
-                    <div class="flow-arrow-node" aria-hidden="true" title="Detection Escalates to Action">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-
-                    <!-- Stage 3: Action -->
-                    <div class="flow-card stage-action">
-                        <div class="card-step-header">
-                            <span class="step-badge">03 ACTION</span>
-                            <span class="step-type-label">SYSTEM ACTION</span>
-                        </div>
-                        <div class="card-content-wrap">
-                            <span class="stage-val" id="intel-action">Baseline allocation set to target weights.</span>
-                        </div>
-                    </div>
-
-                    <!-- Connector 3 -->
-                    <div class="flow-arrow-node" aria-hidden="true" title="Action Produces Verification">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-
-                    <!-- Stage 4: Verification -->
-                    <div class="flow-card stage-verify">
-                        <div class="card-step-header">
-                            <span class="step-badge">04 VERIFICATION</span>
-                            <span class="step-verified-badge">VERIFIED</span>
-                        </div>
-                        <div class="card-content-wrap">
-                            <span class="stage-val" id="intel-result">Balanced risk exposure established.</span>
+                        <div class="directive-box" id="system-response-box">
+                            <div class="directive-title">AUTOMATED ENGINE PRE-EMPTIVE DIRECTIVE</div>
+                            <div class="directive-content" id="res-explanation">
+                                Risk thresholds are approaching limits. Rebalancing sensitivity will increase.
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
 
-        <!-- ─── RIGHT COLUMN: Guardrails, Allocation & Risk Radar ─── -->
-        <div class="cockpit-col-right">
-
-            <!-- Card: 4-Tier Guardrail Pipeline -->
-            <section class="cockpit-card guardrail-card" aria-label="Risk Guardrail Escalation System">
-                <div class="card-header">
-                    <div class="header-left">
-                        <h3 class="card-title">RISK GUARDRAIL PIPELINE</h3>
-                        <span class="card-subtitle">Zero-human-in-the-loop autonomous escalation</span>
+            <!-- Tab 2: Decision Audit Trail -->
+            <div class="deck-tab-content" id="tab-audit" role="tabpanel">
+                <div class="audit-deck-body">
+                    <div class="audit-deck-header">
+                        <span class="sub-header-title">CHRONOLOGICAL AUDIT TRAIL</span>
+                        <button type="button" class="btn-audit-trigger" onclick="toggleFullAuditLog()">
+                            Open Full Screen Modal &rarr;
+                        </button>
+                    </div>
+                    <div class="actions-list-container" id="actions-compact-list">
+                        <div class="empty-state-clean">No decisions logged yet. Start simulation to observe system
+                            actions.</div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="guardrail-directive-bar">
-                    <span class="directive-beacon"></span>
-                    <span class="directive-text" id="alert-text">All risk metrics operating within configured limits. Dynamic drift optimization active.</span>
+        <!-- ═══ 5. COCKPIT FOOTER ═══ -->
+        <footer class="cockpit-footer">
+            <p class="footer-simple">
+                Built by <strong>Team Golden Dragon</strong> for the Init26 Hackathon
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- ═══ 5. FULL AUDIT TRAY MODAL ═══ -->
+    <div class="full-audit-modal-backdrop" id="full-audit-tray" style="display: none;"
+        onclick="if(event.target === this) toggleFullAuditLog()">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <span class="modal-badge">COMPLIANCE &amp; AUDIT</span>
+                    <h3 class="modal-title">COMPLETE DECISION AUDIT TRAIL</h3>
                 </div>
-
-                <div class="guardrail-ladder-grid">
-                    <div class="ladder-step active" id="node-monitor" data-level="MONITOR">
-                        <div class="step-badge">01</div>
-                        <div class="step-info">
-                            <span class="step-name">MONITOR</span>
-                            <span class="step-desc">Nominal Drift Control</span>
-                        </div>
-                        <span class="step-tag active-tag">ACTIVE</span>
-                    </div>
-                    <div class="ladder-step" id="node-warn" data-level="WARN">
-                        <div class="step-badge">02</div>
-                        <div class="step-info">
-                            <span class="step-name">WARN</span>
-                            <span class="step-desc">Buffer Alert Threshold</span>
-                        </div>
-                        <span class="step-tag alert-tag">ALERT</span>
-                    </div>
-                    <div class="ladder-step" id="node-act" data-level="ACT">
-                        <div class="step-badge">03</div>
-                        <div class="step-info">
-                            <span class="step-name">ACT</span>
-                            <span class="step-desc">Forced De-Risking (-30%)</span>
-                        </div>
-                        <span class="step-tag derisk-tag">DE-RISK</span>
-                    </div>
-                    <div class="ladder-step" id="node-circuit" data-level="CIRCUIT_BREAK">
-                        <div class="step-badge">04</div>
-                        <div class="step-info">
-                            <span class="step-name">CIRCUIT BREAK</span>
-                            <span class="step-desc">Defensive Floor Lock</span>
-                        </div>
-                        <span class="step-tag lock-tag">LOCK</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Card: Asset Allocation Donut & Sleeve -->
-            <section class="cockpit-card allocation-card" aria-label="Portfolio Asset Allocation">
-                <div class="card-header">
-                    <div class="header-left">
-                        <h3 class="card-title">PORTFOLIO ALLOCATION</h3>
-                        <span class="card-subtitle">Target vs actual drift</span>
-                    </div>
-                    <span class="tag-clean tabular-nums" id="alloc-count">6 ASSETS</span>
-                </div>
-
-                <div class="allocation-layout">
-                    <div class="donut-wrap">
-                        <canvas id="allocation-chart"></canvas>
-                        <div class="donut-center-overlay">
-                            <span class="donut-center-lbl">PORTFOLIO</span>
-                            <span class="donut-center-val tabular-nums" id="donut-center-nav">$100.0M</span>
-                        </div>
-                    </div>
-                    <div class="allocation-items-list" id="allocation-list">
-                        <!-- Dynamically populated by ES6 JS -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- Card: Institutional Risk Radar Meters -->
-            <section class="cockpit-card risk-gauges-card" aria-label="Institutional Risk Overview">
-                <div class="card-header">
-                    <div class="header-left">
-                        <h3 class="card-title">INSTITUTIONAL RISK RADAR</h3>
-                        <span class="card-subtitle" id="risk-summary-sentence">All metrics operating within conservative risk boundaries.</span>
-                    </div>
-                </div>
-
-                <div class="gauges-stack">
-                    <div class="gauge-item" id="risk-row-var">
-                        <div class="gauge-meta">
-                            <span class="gauge-name">Value at Risk (95% 1-Day)</span>
-                            <span class="gauge-figure tabular-nums"><strong id="val-var-alt">0.00%</strong> / 1.80%</span>
-                        </div>
-                        <div class="gauge-track">
-                            <div class="gauge-fill safe" id="bar-var-alt" style="width: 0%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="gauge-item" id="risk-row-cvar">
-                        <div class="gauge-meta">
-                            <span class="gauge-name">CVaR (Expected Shortfall)</span>
-                            <span class="gauge-figure tabular-nums"><strong id="val-cvar-alt">0.00%</strong> / 2.80%</span>
-                        </div>
-                        <div class="gauge-track">
-                            <div class="gauge-fill safe" id="bar-cvar-alt" style="width: 0%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="gauge-item" id="risk-row-dd">
-                        <div class="gauge-meta">
-                            <span class="gauge-name">Peak-to-Trough Drawdown</span>
-                            <span class="gauge-figure tabular-nums"><strong id="val-dd-alt">0.00%</strong> / 12.00%</span>
-                        </div>
-                        <div class="gauge-track">
-                            <div class="gauge-fill safe" id="bar-dd-alt" style="width: 0%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="gauge-item" id="risk-row-hhi">
-                        <div class="gauge-meta">
-                            <span class="gauge-name">Concentration Index (HHI)</span>
-                            <span class="gauge-figure tabular-nums"><strong id="val-hhi-alt">0.00</strong> / 35.00</span>
-                        </div>
-                        <div class="gauge-track">
-                            <div class="gauge-fill safe" id="bar-hhi-alt" style="width: 0%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+                <button type="button" class="btn-close-modal" onclick="toggleFullAuditLog()">Close</button>
+            </div>
+            <div class="modal-body" id="full-audit-content">
+                <!-- Populated via ES6 JS -->
+            </div>
         </div>
     </div>
 
-    <!-- ═══ 4. TABBED ANALYTICAL DECK (What-If Lab + Audit Log) ═══ -->
-    <section class="analytical-deck" aria-label="Advanced Analytics and Stress Testing">
-        <div class="deck-tabs-nav" role="tablist">
-            <button type="button" class="deck-tab active" id="tab-btn-scenario" role="tab" aria-selected="true" aria-controls="tab-scenario" onclick="switchDeckTab('scenario')">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                <span>QUANTITATIVE WHAT-IF STRESS LAB</span>
-            </button>
-            <button type="button" class="deck-tab" id="tab-btn-audit" role="tab" aria-selected="false" aria-controls="tab-audit" onclick="switchDeckTab('audit')">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                <span>INSTITUTIONAL DECISION AUDIT LOG</span>
-            </button>
-        </div>
-
-        <!-- Tab 1: What-If Scenario Lab -->
-        <div class="deck-tab-content active" id="tab-scenario" role="tabpanel">
-            <div class="scenario-deck-body">
-                <!-- Left: Presets & 6 Sliders Grid -->
-                <div class="scenario-left-col">
-                    <div class="scenario-sub-header">
-                        <span class="sub-header-title">HYPOTHETICAL ASSET SHOCKS</span>
-                        <div class="scenario-presets">
-                            <button type="button" class="preset-pill" onclick="loadPreset('normal')">NORMAL</button>
-                            <button type="button" class="preset-pill active" onclick="loadPreset('crash')">2008 CRASH</button>
-                            <button type="button" class="preset-pill" onclick="loadPreset('rates')">RATE SHOCK</button>
-                            <button type="button" class="preset-pill" onclick="loadPreset('recovery')">RECOVERY</button>
-                        </div>
-                    </div>
-
-                    <div class="shock-grid">
-                        <div class="shock-card">
-                            <div class="shock-top">
-                                <label for="shock-us-equity">US Equity</label>
-                                <span class="shock-val tabular-nums negative" id="val-shock-us-equity">-25%</span>
-                            </div>
-                            <input type="range" id="shock-us-equity" min="-50" max="50" step="1" value="-25" class="shock-slider" oninput="updateSliderDisplay(this)">
-                        </div>
-
-                        <div class="shock-card">
-                            <div class="shock-top">
-                                <label for="shock-govt-bonds">Government Bonds</label>
-                                <span class="shock-val tabular-nums positive" id="val-shock-govt-bonds">+5%</span>
-                            </div>
-                            <input type="range" id="shock-govt-bonds" min="-30" max="30" step="1" value="5" class="shock-slider" oninput="updateSliderDisplay(this)">
-                        </div>
-
-                        <div class="shock-card">
-                            <div class="shock-top">
-                                <label for="shock-intl-equity">International Equity</label>
-                                <span class="shock-val tabular-nums negative" id="val-shock-intl-equity">-30%</span>
-                            </div>
-                            <input type="range" id="shock-intl-equity" min="-50" max="50" step="1" value="-30" class="shock-slider" oninput="updateSliderDisplay(this)">
-                        </div>
-
-                        <div class="shock-card">
-                            <div class="shock-top">
-                                <label for="shock-corp-bonds">Corporate Bonds</label>
-                                <span class="shock-val tabular-nums negative" id="val-shock-corp-bonds">-8%</span>
-                            </div>
-                            <input type="range" id="shock-corp-bonds" min="-30" max="30" step="1" value="-8" class="shock-slider" oninput="updateSliderDisplay(this)">
-                        </div>
-
-                        <div class="shock-card">
-                            <div class="shock-top">
-                                <label for="shock-commodities">Commodities</label>
-                                <span class="shock-val tabular-nums negative" id="val-shock-commodities">-15%</span>
-                            </div>
-                            <input type="range" id="shock-commodities" min="-40" max="40" step="1" value="-15" class="shock-slider" oninput="updateSliderDisplay(this)">
-                        </div>
-
-                        <div class="shock-card">
-                            <div class="shock-top">
-                                <label for="shock-cash">Cash (USD)</label>
-                                <span class="shock-val tabular-nums" id="val-shock-cash">0%</span>
-                            </div>
-                            <input type="range" id="shock-cash" min="-10" max="10" step="1" value="0" class="shock-slider" oninput="updateSliderDisplay(this)">
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn-execute-stress" id="btn-run-scenario" onclick="runScenario()">
-                        Run Quantitative Stress Test
-                    </button>
-                </div>
-
-                <!-- Right: Projected Impact & Directive -->
-                <div class="scenario-right-col" id="scenario-results-panel">
-                    <span class="sub-header-title">SIMULATED POST-SHOCK PROJECTION</span>
-
-                    <div class="impact-metrics-grid">
-                        <div class="impact-tile">
-                            <span class="tile-label">PROJECTED NAV</span>
-                            <span class="tile-val tabular-nums" id="res-nav">$88.60M</span>
-                        </div>
-                        <div class="impact-tile">
-                            <span class="tile-label">PROJECTED RETURN</span>
-                            <span class="tile-val tabular-nums negative" id="res-return">-11.40%</span>
-                        </div>
-                        <div class="impact-tile">
-                            <span class="tile-label">PROJECTED DRAWDOWN</span>
-                            <span class="tile-val tabular-nums negative" id="res-dd">11.40%</span>
-                        </div>
-                        <div class="impact-tile">
-                            <span class="tile-label">GUARDRAIL RESPONSE</span>
-                            <span class="tile-val tag-warn" id="res-level">WARN</span>
-                        </div>
-                    </div>
-
-                    <div class="directive-box" id="system-response-box">
-                        <div class="directive-title">AUTOMATED ENGINE PRE-EMPTIVE DIRECTIVE</div>
-                        <div class="directive-content" id="res-explanation">
-                            Risk thresholds are approaching limits. Rebalancing sensitivity will increase.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 2: Decision Audit Trail -->
-        <div class="deck-tab-content" id="tab-audit" role="tabpanel">
-            <div class="audit-deck-body">
-                <div class="audit-deck-header">
-                    <span class="sub-header-title">CHRONOLOGICAL AUDIT TRAIL</span>
-                    <button type="button" class="btn-audit-trigger" onclick="toggleFullAuditLog()">
-                        Open Full Screen Modal &rarr;
-                    </button>
-                </div>
-                <div class="actions-list-container" id="actions-compact-list">
-                    <div class="empty-state-clean">No decisions logged yet. Start simulation to observe system actions.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ 5. COCKPIT FOOTER ═══ -->
-    <footer class="cockpit-footer">
-        <p class="footer-simple">
-            Built by <strong>Team Golden Dragon</strong> for the Init26 FinTech Hackathon
-        </p>
-    </footer>
-
-</div>
-
-<!-- ═══ 5. FULL AUDIT TRAY MODAL ═══ -->
-<div class="full-audit-modal-backdrop" id="full-audit-tray" style="display: none;" onclick="if(event.target === this) toggleFullAuditLog()">
-    <div class="modal-card">
-        <div class="modal-header">
-            <div class="modal-title-group">
-                <span class="modal-badge">COMPLIANCE &amp; AUDIT</span>
-                <h3 class="modal-title">COMPLETE DECISION AUDIT TRAIL</h3>
-            </div>
-            <button type="button" class="btn-close-modal" onclick="toggleFullAuditLog()">Close</button>
-        </div>
-        <div class="modal-body" id="full-audit-content">
-            <!-- Populated via ES6 JS -->
-        </div>
-    </div>
-</div>
-
-<script src="/static/app.js?v=3.5"></script>
+    <script src="/static/app.js?v=3.5"></script>
 </body>
+
 </html>

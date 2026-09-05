@@ -15,7 +15,7 @@
 
 An institutional-grade portfolio optimization and risk control system that dynamically rebalances capital allocation across 6 asset classes, enforces multi-layered risk guardrails (Monitor → Warn → Act → Circuit Break), and explains every automated decision in plain language through a real-time interactive dashboard.
 
-Built for the **Init26 Hackathon** - Asset & Capital Management / Optimization Controls (FinTech track).
+Built for the **Init26 Hackathon** by **Team Golden Dragon** — Asset & Capital Management / Optimization Controls (FinTech track).
 
 ---
 
@@ -255,4 +255,4 @@ Open **http://localhost:8000** in your browser.
 
 ---
 
-*Built for the Init26 FinTech Hackathon*
+*Built for the Init26 Hackathon by Team Golden Dragon*
