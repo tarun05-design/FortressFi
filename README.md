@@ -34,57 +34,45 @@ This system directly addresses all three required areas from the hackathon brief
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TB
-    subgraph MarketLayer["1. Market Data & Simulation Layer"]
-        M1["Correlated Asset Simulator<br/><i>Geometric Brownian Motion</i>"]
-        M2["Regime Detector<br/><i>Rolling Volatility Estimator</i>"]
-        M1 --> M2
+flowchart TD
+    %% Global Styling
+    classDef compNode fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc,rx:6px,ry:6px;
+
+    subgraph L1["1. MARKET DATA & REGIME DETECTION"]
+        direction LR
+        A1["Market Data Simulator<br/><i>Correlated Multi-Asset GBM</i>"]
+        A2["Regime Classifier<br/><i>Realized Volatility Engine</i>"]
+        A1 -->|"Correlated Prices"| A2
     end
 
-    subgraph StateLayer["2. State & Capital Management"]
-        P1["Portfolio State Manager<br/><i>Holdings, NAV & Drift Tracker</i>"]
-        P2["Decision Audit Ledger<br/><i>Plain-English Decision History</i>"]
-        P1 <--> P2
+    subgraph L2["2. DUAL-ENGINE INTELLIGENCE CORE"]
+        direction LR
+        B1["Optimization Engine<br/><i>Mean-Variance SLSQP</i>"]
+        B2["Risk Guardrail Engine<br/><i>CVaR 95% & Circuit Breakers</i>"]
+        B2 <-->|"Pre-Trade Gate & Veto"| B1
     end
 
-    subgraph RiskLayer["3. Autonomous Risk Guardrails"]
-        R1["Tail Risk Evaluator<br/><i>CVaR 95% Historical Simulation</i>"]
-        R2["Drawdown Tracker<br/><i>Incremental Peak-to-Trough</i>"]
-        R3{"4-Tier Guardrail Engine<br/><i>MONITOR ➔ WARN ➔ ACT ➔ CIRCUIT BREAK</i>"}
-        R1 --> R3
-        R2 --> R3
+    subgraph L3["3. PORTFOLIO STATE & AUDIT LEDGER"]
+        direction LR
+        C1["Portfolio State Manager<br/><i>Holdings, NAV & Drift Monitoring</i>"]
+        C2["Decision Audit Ledger<br/><i>Plain-English Audit Trail</i>"]
+        C1 <-->|"Logged Decisions"| C2
     end
 
-    subgraph OptLayer["4. Quantitative Optimization Engine"]
-        O1["Mean-Variance Optimizer<br/><i>SciPy SLSQP Solver</i>"]
-        O2["Adaptive Risk Aversion<br/><i>Regime-Scaled &lambda; (2.0 - 12.0)</i>"]
-        O3["Drift-Gated Trigger<br/><i>Transaction Fee Minimization</i>"]
-        O2 --> O1
-        O3 --> O1
+    subgraph L4["4. REAL-TIME TELEMETRY & COCKPIT UI"]
+        direction LR
+        D1["FastAPI WebSocket Server<br/><i>Async Streaming Broadcast</i>"]
+        D2["Institutional Risk Cockpit<br/><i>Live Charts, Gauges & Scenario Lab</i>"]
+        D1 -->|"Live Feed (/ws/live)"| D2
+        D2 -.->|"User Actions & Shocks"| D1
     end
 
-    subgraph ServingLayer["5. Asynchronous Serving & Telemetry"]
-        S1["FastAPI Engine Core<br/><i>Async Lifespan & REST API</i>"]
-        S2["WebSocket Streaming Broadcast<br/><i>Sub-second State Push (/ws/live)</i>"]
-        S1 <--> S2
-    end
+    %% Clean Pipeline Flow (Zero Cross-Line Tangling)
+    L1 ==>|"1. Asset Returns & Market Regimes"| L2
+    L2 ==>|"2. Optimal Weights & Guardrail Actions"| L3
+    L3 ==>|"3. Portfolio Telemetry & Audit Stream"| L4
 
-    subgraph DashboardLayer["6. Institutional Risk Cockpit UI"]
-        UI1["Live Telemetry & NAV Chart<br/><i>Interactive Chart.js</i>"]
-        UI2["Asset Allocation Donut & Drift<br/><i>Real-time Holdings Breakdown</i>"]
-        UI3["Risk Radar & Guardrail Badges<br/><i>Visual VaR / CVaR Gauges</i>"]
-        UI4["What-If Stress Scenario Lab<br/><i>Hypothetical Market Shocks</i>"]
-    end
-
-    MarketLayer -->|"Daily Returns & Vol"| StateLayer
-    StateLayer -->|"Holdings & History"| RiskLayer
-    StateLayer -->|"Weight Drift Check"| OptLayer
-    RiskLayer -->|"CVaR Pre-Trade Gate / Emergency Override"| OptLayer
-    OptLayer -->|"Target Weights (SLSQP)"| StateLayer
-    RiskLayer -->|"Tier Escalation & Circuit Breaker"| StateLayer
-    StateLayer -->|"System Telemetry Payload"| ServingLayer
-    ServingLayer -->|"Real-Time Push"| DashboardLayer
-    DashboardLayer -.->|"User Actions & Scenarios"| ServingLayer
+    class A1,A2,B1,B2,C1,C2,D1,D2 compNode;
 ```
 
 **Simulation loop per tick:**
