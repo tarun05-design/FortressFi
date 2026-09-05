@@ -1687,131 +1687,21 @@ body.cockpit-theme {
 
 .cockpit-footer {
     margin-top: 36px;
-    padding-top: 24px;
-    padding-bottom: 32px;
+    padding-top: 20px;
+    padding-bottom: 28px;
     border-top: 1px solid rgba(148, 163, 184, 0.12);
-    color: var(--text-muted);
-    font-size: 13px;
+    text-align: center;
 }
 
-.footer-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.footer-left {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-}
-
-.footer-logo {
-    color: var(--text-primary);
-    font-weight: 700;
-}
-
-.footer-logo b {
-    color: var(--accent-cyan);
-}
-
-.footer-divider {
-    color: var(--border-color);
-}
-
-.footer-tagline {
-    color: var(--text-secondary);
-    font-size: 12px;
-}
-
-.footer-desc {
+.footer-simple {
     margin: 0;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
+    letter-spacing: 0.02em;
 }
 
-.footer-desc strong {
+.footer-simple strong {
     color: var(--text-secondary);
-}
-
-.footer-center {
-    display: flex;
-    align-items: center;
-}
-
-.footer-stats-strip {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    padding: 6px 14px;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    font-family: var(--font-mono);
-}
-
-.f-stat {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--text-secondary);
-}
-
-.f-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.dot-green { background: var(--accent-emerald); }
-.dot-cyan { background: var(--accent-cyan); }
-.dot-amber { background: var(--accent-amber); }
-
-.footer-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.footer-team {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.footer-status-pill {
-    font-family: var(--font-mono);
-    font-size: 11px;
     font-weight: 600;
-    color: var(--accent-emerald);
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.05em;
-}
-
-@media (max-width: 860px) {
-    .footer-inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .footer-stats-strip {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-        width: 100%;
-    }
 }
 
