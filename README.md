@@ -255,4 +255,17 @@ Open **http://localhost:8000** in your browser.
 
 ---
 
-*Built for the Init26 FinTech Hackathon*
+<div align="center">
+
+### FortressFi
+
+**Autonomous Capital Cruise Control & Real-Time Risk-Guardrail Engine**
+
+Built for the **Init26 FinTech Hackathon**  
+*Track: Asset & Capital Management / Optimization Controls*
+
+🌐 [Live Cockpit](https://fortressfi.onrender.com) &bull; [Problem Statement](template/readme_fintech.md) &bull; [Presentation Deck](template/FortressFi_Presentation.pptx) &bull; [Top](#fortressfi--adaptive-risk-guardrail-portfolio-engine)
+
+<sub>Team FortressFi &bull; 2026</sub>
+
+</div>
