@@ -35,14 +35,8 @@ This system directly addresses all three required areas from the hackathon brief
 
 ```mermaid
 flowchart TD
-    subgraph CoreEngine["&nbsp;<br/><b>Core Quantitative & Risk Engines</b><br/>&nbsp;"]
-        direction LR
-        A["<b>Market Simulator</b><br/>(returns + regimes)"]
-        B["<b>Optimization Engine</b><br/>(Mean-Var SLSQP)"]
-        C["<b>Risk Guardrail Engine</b><br/>(CVaR gate)"]
-        A --> B
-        B --> C
-    end
+    A["<b>Market Simulator</b><br/>(returns + regimes)"] --> B["<b>Optimization Engine</b><br/>(Mean-Var SLSQP)"]
+    B --> C["<b>Risk Guardrail Engine</b><br/>(CVaR gate)"]
 
     D["<b>Portfolio State Manager</b><br/>(holdings, NAV, history, decision audit log)"]
     E["<b>FastAPI Server</b><br/>(REST API + WebSocket Stream)"]
@@ -55,8 +49,6 @@ flowchart TD
     E <-->|"Real-Time Push"| F
 
     classDef default fill:#1e293b,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc,rx:6px,ry:6px;
-    classDef container fill:#0f172a,stroke:#334155,stroke-width:1.5px,color:#94a3b8;
-    class CoreEngine container;
 ```
 
 **Execution Flow per Tick:**
