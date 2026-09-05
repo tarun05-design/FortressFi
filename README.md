@@ -2,6 +2,9 @@
 
 > **Automated capital management with real-time risk guardrails, Mean-Variance optimization, and tiered circuit-breaker controls.**
 
+🌐 **Live Interactive Cockpit**: [https://fortressfi.onrender.com](https://fortressfi.onrender.com)  
+📦 **GitHub Repository**: [https://github.com/tarun05-design/FortressFi](https://github.com/tarun05-design/FortressFi)
+
 An institutional-grade portfolio optimization and risk control system that dynamically rebalances capital allocation across 6 asset classes, enforces multi-layered risk guardrails (Monitor → Warn → Act → Circuit Break), and explains every automated decision in plain language through a real-time interactive dashboard.
 
 Built for the **Init26 FinTech Hackathon** at MPSTME (Asset & Capital Management / Optimization Controls track).
