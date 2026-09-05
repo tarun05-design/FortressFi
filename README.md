@@ -2,8 +2,16 @@
 
 > **Automated capital management with real-time risk guardrails, Mean-Variance optimization, and tiered circuit-breaker controls.**
 
-🌐 **Live Interactive Cockpit**: [https://fortressfi.onrender.com](https://fortressfi.onrender.com)  
-📦 **GitHub Repository**: [https://github.com/tarun05-design/FortressFi](https://github.com/tarun05-design/FortressFi)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![NumPy](https://img.shields.io/badge/NumPy-1.26%2B-013243?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)
+[![SciPy](https://img.shields.io/badge/SciPy-1.13%2B-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white)](https://scipy.org/)
+[![WebSockets](https://img.shields.io/badge/WebSockets-Real--Time-010101?style=for-the-badge&logo=socketdotio&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+[![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
+[![Deploy](https://img.shields.io/badge/Render-Live_Cockpit-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://fortressfi.onrender.com)
+[![Tests](https://img.shields.io/badge/Tests-40%2F40_Passing-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+
+🌐 **Live Interactive Cockpit**: [https://fortressfi.onrender.com](https://fortressfi.onrender.com)
 
 An institutional-grade portfolio optimization and risk control system that dynamically rebalances capital allocation across 6 asset classes, enforces multi-layered risk guardrails (Monitor → Warn → Act → Circuit Break), and explains every automated decision in plain language through a real-time interactive dashboard.
 
@@ -23,35 +31,60 @@ This system directly addresses all three required areas from the hackathon brief
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                 FortressFi System Architecture              │
-│                                                             │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-│  │   Market      │    │ Optimization │    │    Risk       │  │
-│  │   Simulator   │───▶│   Engine     │───▶│  Guardrail   │  │
-│  │  (returns +   │    │ (Mean-Var    │    │   Engine     │  │
-│  │   regimes)    │    │  SLSQP)      │    │ (CVaR gate)  │  │
-│  └──────┬───────┘    └──────┬───────┘    └──────┬───────┘  │
-│         │                   │                    │          │
-│         ▼                   ▼                    ▼          │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │              Portfolio State Manager                 │   │
-│  │   (holdings, NAV, history, decision audit log)      │   │
-│  └─────────────────────┬───────────────────────────────┘   │
-│                        │ WebSocket + REST                   │
-│  ┌─────────────────────┴───────────────────────────────┐   │
-│  │              FastAPI Server                          │   │
-│  └─────────────────────┬───────────────────────────────┘   │
-│                        │                                    │
-│  ┌─────────────────────┴───────────────────────────────┐   │
-│  │              Interactive Dashboard                   │   │
-│  │   Allocation │ Risk Gauges │ NAV Chart │ Scenarios  │   │
-│  │   Decision Log with plain-language explanations      │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph MarketLayer["1. Market Data & Simulation Layer"]
+        M1["Correlated Asset Simulator<br/><i>Geometric Brownian Motion</i>"]
+        M2["Regime Detector<br/><i>Rolling Volatility Estimator</i>"]
+        M1 --> M2
+    end
+
+    subgraph StateLayer["2. State & Capital Management"]
+        P1["Portfolio State Manager<br/><i>Holdings, NAV & Drift Tracker</i>"]
+        P2["Decision Audit Ledger<br/><i>Plain-English Decision History</i>"]
+        P1 <--> P2
+    end
+
+    subgraph RiskLayer["3. Autonomous Risk Guardrails"]
+        R1["Tail Risk Evaluator<br/><i>CVaR 95% Historical Simulation</i>"]
+        R2["Drawdown Tracker<br/><i>Incremental Peak-to-Trough</i>"]
+        R3{"4-Tier Guardrail Engine<br/><i>MONITOR ➔ WARN ➔ ACT ➔ CIRCUIT BREAK</i>"}
+        R1 --> R3
+        R2 --> R3
+    end
+
+    subgraph OptLayer["4. Quantitative Optimization Engine"]
+        O1["Mean-Variance Optimizer<br/><i>SciPy SLSQP Solver</i>"]
+        O2["Adaptive Risk Aversion<br/><i>Regime-Scaled &lambda; (2.0 - 12.0)</i>"]
+        O3["Drift-Gated Trigger<br/><i>Transaction Fee Minimization</i>"]
+        O2 --> O1
+        O3 --> O1
+    end
+
+    subgraph ServingLayer["5. Asynchronous Serving & Telemetry"]
+        S1["FastAPI Engine Core<br/><i>Async Lifespan & REST API</i>"]
+        S2["WebSocket Streaming Broadcast<br/><i>Sub-second State Push (/ws/live)</i>"]
+        S1 <--> S2
+    end
+
+    subgraph DashboardLayer["6. Institutional Risk Cockpit UI"]
+        UI1["Live Telemetry & NAV Chart<br/><i>Interactive Chart.js</i>"]
+        UI2["Asset Allocation Donut & Drift<br/><i>Real-time Holdings Breakdown</i>"]
+        UI3["Risk Radar & Guardrail Badges<br/><i>Visual VaR / CVaR Gauges</i>"]
+        UI4["What-If Stress Scenario Lab<br/><i>Hypothetical Market Shocks</i>"]
+    end
+
+    MarketLayer -->|"Daily Returns & Vol"| StateLayer
+    StateLayer -->|"Holdings & History"| RiskLayer
+    StateLayer -->|"Weight Drift Check"| OptLayer
+    RiskLayer -->|"CVaR Pre-Trade Gate / Emergency Override"| OptLayer
+    OptLayer -->|"Target Weights (SLSQP)"| StateLayer
+    RiskLayer -->|"Tier Escalation & Circuit Breaker"| StateLayer
+    StateLayer -->|"System Telemetry Payload"| ServingLayer
+    ServingLayer -->|"Real-Time Push"| DashboardLayer
+    DashboardLayer -.->|"User Actions & Scenarios"| ServingLayer
 ```
 
 **Simulation loop per tick:**
@@ -207,7 +240,11 @@ Open **http://localhost:8000** in your browser.
 │   ├── test_optimization_engine.py # SLSQP convergence & turnover constraints
 │   ├── test_portfolio.py        # NAV tracking, drift & audit trail tests
 │   └── test_risk_engine.py      # VaR, CVaR & guardrail boundary tests
-└── template/                    # Hackathon presentation deck & problem brief
+└── template/                    # Hackathon deliverables & presentation assets
+    ├── FortressFi_Presentation.pptx # Winning hackathon pitch deck (8 slides)
+    ├── INIT_26_PPT_FORMAT.pptx  # Original competition template
+    ├── readme_fintech.md        # FinTech track problem brief & evaluation criteria
+    └── images/                  # High-resolution dashboard telemetry screenshots
 ```
 
 ---
