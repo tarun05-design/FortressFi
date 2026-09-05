@@ -4,10 +4,10 @@ Risk Guardrail Engine: CVaR monitoring and tiered guardrail response system.
 Computes risk metrics each tick (VaR, CVaR, drawdown, concentration) and classifies
 the portfolio's risk status into one of four institutional guardrail levels:
 
-    🟢 MONITOR       : All metrics within bounds, normal operation
-    🟡 WARN          : Any metric approaching limit (>80%), tighten sensitivity
-    🔴 ACT           : Any metric breaches limit, force proportional de-risking
-    ⚫ CIRCUIT_BREAK  : Severe breach, override to defensive allocation
+    MONITOR        : All metrics within bounds, normal operation
+    WARN           : Any metric approaching limit (>80%), tighten sensitivity
+    ACT            : Any metric breaches limit, force proportional de-risking
+    CIRCUIT_BREAK  : Severe breach, override to defensive allocation
 
 CVaR is computed via historical simulation (sort returns, mean of worst α%).
 Thresholds are dynamically regime-adjusted: limits tighten in high volatility and crisis.

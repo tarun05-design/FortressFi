@@ -17,9 +17,7 @@ An institutional-grade portfolio optimization and risk control system that dynam
 
 Built for the **Init26 FinTech Hackathon** at MPSTME (Asset & Capital Management / Optimization Controls track).
 
----
-
-## 🎯 Problem Statement Alignment
+## Problem Statement Alignment
 
 This system directly addresses all three required areas from the hackathon brief:
 
@@ -31,22 +29,22 @@ This system directly addresses all three required areas from the hackathon brief
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 flowchart TD
     subgraph CoreEngine["Core Quantitative & Risk Engines"]
         direction LR
-        A["📊 <b>Market Simulator</b><br/>(returns + regimes)"]
-        B["⚡ <b>Optimization Engine</b><br/>(Mean-Var SLSQP)"]
-        C["🛡️ <b>Risk Guardrail Engine</b><br/>(CVaR gate)"]
+        A["<b>Market Simulator</b><br/>(returns + regimes)"]
+        B["<b>Optimization Engine</b><br/>(Mean-Var SLSQP)"]
+        C["<b>Risk Guardrail Engine</b><br/>(CVaR gate)"]
         A --> B
         B --> C
     end
 
-    D["💼 <b>Portfolio State Manager</b><br/>(holdings, NAV, history, decision audit log)"]
-    E["🚀 <b>FastAPI Server</b><br/>(REST API + WebSocket Stream)"]
-    F["🖥️ <b>Interactive Dashboard</b><br/>Allocation  |  Risk Gauges  |  NAV Chart  |  Scenarios  |  Decision Log"]
+    D["<b>Portfolio State Manager</b><br/>(holdings, NAV, history, decision audit log)"]
+    E["<b>FastAPI Server</b><br/>(REST API + WebSocket Stream)"]
+    F["<b>Interactive Dashboard</b><br/>Allocation  |  Risk Gauges  |  NAV Chart  |  Scenarios  |  Decision Log"]
 
     A --> D
     B --> D
@@ -69,7 +67,7 @@ flowchart TD
 
 ---
 
-## 💰 Financial Logic
+## Financial Logic
 
 ### Optimization (Mean-Variance)
 
@@ -114,10 +112,10 @@ CVaR is computed via **historical simulation**: sort the rolling 60-day portfoli
 
 | Level | Trigger | Action |
 |---|---|---|
-| 🟢 MONITOR | All metrics within bounds | Normal operation |
-| 🟡 WARN | Any metric > 80% of limit | Alert + tighten rebalancing sensitivity |
-| 🔴 ACT | Any metric breaches limit | Auto de-risk: reduce equity, increase bonds/cash |
-| ⚫ CIRCUIT BREAK | Drawdown > 15% or CVaR > 2× limit | Override to defensive allocation, suspend optimization |
+| MONITOR | All metrics within bounds | Normal operation |
+| WARN | Any metric > 80% of limit | Alert + tighten rebalancing sensitivity |
+| ACT | Any metric breaches limit | Auto de-risk: reduce equity, increase bonds/cash |
+| CIRCUIT BREAK | Drawdown > 15% or CVaR > 2× limit | Override to defensive allocation, suspend optimization |
 
 Thresholds are **regime-adjusted**: in crisis regime, limits tighten by 40%, making the system more defensive before conditions worsen.
 
@@ -133,7 +131,7 @@ Generates correlated multi-asset returns using Cholesky decomposition of a confi
 
 ---
 
-## 🖥️ Dashboard
+## Dashboard Cockpit
 
 **Real-time panels:**
 - **Alert Banner**: Current guardrail level with pulsing animation for WARN/ACT/CIRCUIT BREAK
@@ -145,7 +143,7 @@ Generates correlated multi-asset returns using Cholesky decomposition of a confi
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.10+ (tested on 3.14)
@@ -180,7 +178,7 @@ Open **http://localhost:8000** in your browser.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── .gitignore                   # Production repository exclusions
@@ -220,7 +218,7 @@ Open **http://localhost:8000** in your browser.
 
 ---
 
-## 🔌 API Reference
+## API Reference
 
 | Endpoint | Method | Description |
 |---|---|---|
@@ -238,7 +236,7 @@ Open **http://localhost:8000** in your browser.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology | Rationale |
 |---|---|---|
@@ -251,7 +249,7 @@ Open **http://localhost:8000** in your browser.
 
 ---
 
-## 📊 Design Decisions & Trade-offs
+## Design Decisions & Trade-offs
 
 1. **Mean-Variance + CVaR-as-guardrail vs. Mean-CVaR LP**: We chose to optimize on variance (smooth, quadratic, SLSQP handles cleanly) and use CVaR as a monitoring/gating metric. This avoids the complexity of Rockafellar-Uryasev LP formulation while maintaining genuine tail risk control through the guardrail system.
 

@@ -534,28 +534,28 @@ function updateNAVChart(day, nav, level, decisions) {
             if (d.day === day) {
                 if (d.action_type === 'REBALANCE') {
                     navData.events[day] = {
-                        icon: '🔄',
+                        icon: 'REBAL',
                         title: 'Automatic Rebalance',
                         action: 'Portfolio allocation optimized to offset drift.',
                         type: 'REBALANCE'
                     };
                 } else if (d.action_type === 'GUARDRAIL_WARN') {
                     navData.events[day] = {
-                        icon: '⚠',
+                        icon: 'WARN',
                         title: 'Guardrail Warning',
                         action: 'Volatility buffer alert triggered; solver sensitivity increased.',
                         type: 'GUARDRAIL_WARN'
                     };
                 } else if (d.action_type === 'GUARDRAIL_ACT') {
                     navData.events[day] = {
-                        icon: '⚡',
+                        icon: 'ACT',
                         title: 'Defensive De-Risking',
                         action: 'Forced equity exposure reduction (-30%) into bonds and cash.',
                         type: 'GUARDRAIL_ACT'
                     };
                 } else if (d.action_type === 'CIRCUIT_BREAK' || d.action_type === 'GUARDRAIL_CIRCUIT_BREAK') {
                     navData.events[day] = {
-                        icon: '🛑',
+                        icon: 'LOCK',
                         title: 'Circuit Breaker Lock',
                         action: 'Emergency capital floor enforced (60% Govt Bonds, 40% Cash).',
                         type: 'CIRCUIT_BREAK'
@@ -800,7 +800,7 @@ function renderRiskBar(key, value, limit, suffix) {
     applyBar(barAlt);
 }
 
-// ─── 11. 🧠 ARGPE DECISION ENGINE (Signature Autonomous Risk System) ─────────
+// ─── 11. ARGPE DECISION ENGINE (Signature Autonomous Risk System) ────────────
 
 let activeDecisionForReceipt = null;
 
@@ -1313,14 +1313,14 @@ function updateRecentActions(decisions) {
 
 function getDecisionIcon(type) {
     switch (type) {
-        case 'INIT': return '✓';
-        case 'REBALANCE': return '🔄';
-        case 'GUARDRAIL_WARN': return '⚠';
-        case 'GUARDRAIL_ACT': return '⚡';
+        case 'INIT': return '[INIT]';
+        case 'REBALANCE': return '[REBAL]';
+        case 'GUARDRAIL_WARN': return '[WARN]';
+        case 'GUARDRAIL_ACT': return '[ACT]';
         case 'GUARDRAIL_CIRCUIT_BREAK':
-        case 'CIRCUIT_BREAK': return '🛑';
-        case 'RECOVERY': return '🚀';
-        default: return '●';
+        case 'CIRCUIT_BREAK': return '[HALT]';
+        case 'RECOVERY': return '[RECOV]';
+        default: return '[INFO]';
     }
 }
 
