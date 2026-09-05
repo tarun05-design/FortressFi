@@ -3,7 +3,6 @@ Unit tests for Portfolio state manager and performance math.
 """
 
 import numpy as np
-import pytest
 
 from engine import Portfolio, ASSET_CLASSES
 

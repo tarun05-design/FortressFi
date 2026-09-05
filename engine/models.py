@@ -11,8 +11,6 @@ from typing import Any, Optional
 import numpy as np
 from pydantic import BaseModel, Field
 
-from engine.config import VolatilityRegime, ASSET_CLASSES
-
 
 # ─── Risk & Guardrail Models ──────────────────────────────────────────────────
 

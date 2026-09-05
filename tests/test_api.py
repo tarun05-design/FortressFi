@@ -3,7 +3,6 @@ Integration tests for FastAPI REST endpoints and WebSocket live stream.
 """
 
 import json
-import pytest
 
 
 class TestAPIEndpoints:

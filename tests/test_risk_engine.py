@@ -3,15 +3,10 @@ Unit tests for RiskEngine and 4-tier guardrail system.
 """
 
 import numpy as np
-import pytest
 
 from engine import (
-    RiskEngine,
     RiskMetrics,
     VolatilityRegime,
-    ASSET_CLASSES,
-    CIRCUIT_BREAK_DRAWDOWN,
-    RECOVERY_DRAWDOWN,
     DEFENSIVE_WEIGHTS,
 )
 

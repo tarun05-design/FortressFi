@@ -12,7 +12,6 @@ from fastapi import WebSocket
 
 from engine import (
     ASSET_CLASSES,
-    DecisionRecord,
     GuardrailStatus,
     MarketSimulator,
     OptimizationEngine,

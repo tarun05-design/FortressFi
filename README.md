@@ -151,8 +151,8 @@ Generates correlated multi-asset returns using Cholesky decomposition of a confi
 
 ```bash
 # Clone the repository
-git clone <repo-url>
-cd "Adaptive Risk-Guardrail Portfolio Engine"
+git clone https://github.com/tarun05-design/FortressFi.git
+cd FortressFi
 
 # Install dependencies
 pip install -r requirements.txt
@@ -180,6 +180,8 @@ Open **http://localhost:8000** in your browser.
 
 ```
 ├── .gitignore                   # Production repository exclusions
+├── Procfile                     # Web process definition for cloud PaaS (Render)
+├── render.yaml                  # Cloud deployment configuration
 ├── README.md                    # Architecture & system documentation
 ├── requirements.txt             # Python dependencies & test runner
 ├── server.py                    # FastAPI server (entry point & lifespan)
@@ -205,7 +207,7 @@ Open **http://localhost:8000** in your browser.
 │   ├── test_optimization_engine.py # SLSQP convergence & turnover constraints
 │   ├── test_portfolio.py        # NAV tracking, drift & audit trail tests
 │   └── test_risk_engine.py      # VaR, CVaR & guardrail boundary tests
-└── readme_fintech.md            # Init26 FinTech Hackathon problem brief
+└── template/                    # Hackathon presentation deck & problem brief
 ```
 
 ---

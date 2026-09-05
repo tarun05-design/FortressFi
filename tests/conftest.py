@@ -12,7 +12,6 @@ from engine import (
     OptimizationEngine,
     Portfolio,
     RiskEngine,
-    VolatilityRegime,
 )
 from server import app, service
 

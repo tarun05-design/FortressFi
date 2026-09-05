@@ -3,9 +3,8 @@ Unit tests for OptimizationEngine.
 """
 
 import numpy as np
-import pytest
 
-from engine import OptimizationEngine, VolatilityRegime, ASSET_CLASSES, WEIGHT_BOUNDS, MAX_TURNOVER
+from engine import VolatilityRegime, ASSET_CLASSES, WEIGHT_BOUNDS, MAX_TURNOVER
 
 
 class TestOptimizationEngine:

@@ -9,7 +9,6 @@ Performance metrics (Sharpe, Sortino, max drawdown, cumulative return) are compu
 efficiently with incremental O(1) drawdown tracking.
 """
 
-from datetime import datetime, timezone
 from typing import Any, Optional
 import numpy as np
 
